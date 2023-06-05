@@ -44,6 +44,9 @@ func SetupRouter(sys *models.SysParams, res []float64) *gin.Engine {
 			erdOp := tools.CreateERDOp(*sys, *eegData)
 			res, _ = erdOp.Operate()
 			//fmt.Println(res[:5])
+			savePath := "D:\\360MoveData\\Users\\Hu\\Desktop\\gotest\\奥集能前端\\public\\matfile\\test.png"
+			utils.NumberPlotERD(res, "line1", savePath)
+			//流形式传给前端
 			c.JSON(http.StatusOK, gin.H{
 				"epochs": eegData.Epochs,
 				"frames": eegData.Frames,
