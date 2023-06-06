@@ -44,7 +44,7 @@ func SetupRouter(sys *models.SysParams, res []float64) *gin.Engine {
 			erdOp := tools.CreateERDOp(*sys, *eegData)
 			res, _ = erdOp.Operate()
 			//fmt.Println(res[:5])
-			savePath := "D:\\360MoveData\\Users\\Hu\\Desktop\\gotest\\奥集能前端\\public\\matfile\\test.png"
+			savePath := "D:\\360MoveData\\Users\\Hu\\Desktop\\gotest\\奥集能前端\\public\\matfile\\ERDTest.png"
 			utils.NumberPlotERD(res, "line1", savePath)
 			//流形式传给前端
 			c.JSON(http.StatusOK, gin.H{
@@ -81,13 +81,15 @@ func SetupRouter(sys *models.SysParams, res []float64) *gin.Engine {
 		var epochs int
 		psdGroup.POST("/compute", func(c *gin.Context) {
 			sys.BandOptions = c.PostFormArray("band_options[]")
-
 			sys.SampleRate, _ = strconv.Atoi(c.PostForm("sample_rate"))
+			sys.FileDst = "D:\\360MoveData\\Users\\Hu\\Desktop\\gotest\\特征提取工具\\EEG\\files\\test.mat"
 			element := tools.ElementRead(sys.FileDst)
 			eegData := tools.ElementParse(element, sys.SampleRate)
 			epochs = eegData.Epochs
 			psdOp := tools.CreatePSDOp(*sys, *eegData)
 			res, _ = psdOp.Operate()
+			savePath := "D:\\360MoveData\\Users\\Hu\\Desktop\\gotest\\奥集能前端\\public\\matfile\\PSDTest.png"
+			utils.NumberPlotPSD(res, sys.BandOptions, epochs, savePath)
 			c.JSON(http.StatusOK, gin.H{
 				"epochs": epochs,
 				"frames": eegData.Frames,
